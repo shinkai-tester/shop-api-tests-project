@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "type": "object",
+  "required": [
+    "method",
+    "status",
+    "field_error",
+    "error",
+    "message"
+  ],
+  "properties": {
+    "method": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "field_error": {
+      "type": "string"
+    },
+    "error": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    }
+  }
+}

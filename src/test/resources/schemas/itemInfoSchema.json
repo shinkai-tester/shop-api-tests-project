@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "type": "object",
+  "required": [
+    "method",
+    "status",
+    "result"
+  ],
+  "properties": {
+    "method": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "result": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "section",
+        "description"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "section": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "color": {
+          "type": "string"
+        },
+        "price": {
+          "type": "number"
+        },
+        "params": {
+          "type": "string"
+        },
+        "photo": {
+          "type": "string",
+          "pattern": "^(data:image\/[bmp,gif,ico,jpg,png,svg,webp,x\\-icon,svg+xml]+;base64,[a-zA-Z0-9,+,/]+={0,2})$"
+        },
+        "size": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
