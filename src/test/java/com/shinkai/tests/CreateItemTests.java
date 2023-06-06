@@ -110,9 +110,15 @@ public class CreateItemTests extends TestBase {
         );
 
         switch (parameter) {
-            case "name" -> newItem.setName("");
-            case "section" -> newItem.setSection("");
-            case "description" -> newItem.setDescription("");
+            case "name":
+                newItem.setName("");
+                break;
+            case "section":
+                newItem.setSection("");
+                break;
+            case "description":
+                newItem.setDescription("");
+                break;
         }
 
         ItemErrorFieldResponseDto createItemWithError = itemApi.createItemWithErrorField(newItem);
