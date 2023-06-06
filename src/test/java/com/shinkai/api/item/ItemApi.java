@@ -47,7 +47,7 @@ public class ItemApi extends BaseApi {
 
     @Step("Deleting existing item")
     public DeleteItemResponseDto deleteItem(SingleItemRequestDto itemId) {
-        return  with()
+        return with()
                 .filter(withCustomTemplates())
                 .given().spec(defaultRequestSpec)
                 .body(itemId)
@@ -64,7 +64,7 @@ public class ItemApi extends BaseApi {
 
     @Step("Sending delete item request which leads to error response")
     public ItemErrorFieldResponseDto deleteItemWithErrorField(SingleItemRequestDto itemId) {
-        return  with()
+        return with()
                 .filter(withCustomTemplates())
                 .given().spec(defaultRequestSpec)
                 .body(itemId)
@@ -81,7 +81,7 @@ public class ItemApi extends BaseApi {
 
     @Step("Sending get unknown item request")
     public ItemErrorFieldResponseDto getUnknownSingleItemInfo(SingleItemRequestDto itemId) {
-        return  with()
+        return with()
                 .filter(withCustomTemplates())
                 .given().spec(defaultRequestSpec)
                 .body(itemId)
