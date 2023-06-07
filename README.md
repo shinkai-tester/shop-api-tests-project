@@ -1,4 +1,5 @@
 ## Automated REST API tests for [Shop](http://shop.bugred.ru/)
+https://testbase.atlassian.net/wiki/spaces/SHOP/overview?homepageId=1411056054
 <p>
   <img src="media/Shop_main.png" alt="Shop main" width="800">
 </p>
