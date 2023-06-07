@@ -13,11 +13,11 @@ https://testbase.atlassian.net/wiki/spaces/SHOP/overview?homepageId=1411056054
 - [📄 Description](#-description)
 - [📋 List of REST API tests](#-list-of-rest-api-tests)
 - [🔌 Running tests from the terminal](#-running-tests-from-the-terminal)
-- [⚙️ Running tests in Jenkins](#img-width4-titlejenkins-srcmedialogosjenkinslogosvg-running-tests-in-jenkins)
-- [📊 Test results report in Allure Report](#img-width4-titleallure-report-srcmedialogosalluresvg-test-results-report-in-allure-report)
-- [🚀 Integration with Allure TestOps](#img-width4-titleallure-testops-srcmedialogosalluretosvg-integration-with-allure-testops)
-- [🔗 Integration with Jira](#img-width4-titlejira-srcmedialogosjirasvg-integration-with-jira)
-- [📣 Integration with Telegram](#img-width4-titletelegram-srcmedialogostelegramsvg-telegram-notifications-using-a-bot)
+- [⚙️ Running tests in Jenkins](#-running-tests-in-jenkins)
+- [📊 Test results report in Allure Report](#-test-results-report-in-allure-report)
+- [🚀 Integration with Allure TestOps](#-integration-with-allure-testops)
+- [🔗 Integration with Jira](#-integration-with-jira)
+- [📣 Integration with Telegram](#-telegram-notifications-using-a-bot)
 
 ## 🛠️ Stack of technologies
 
