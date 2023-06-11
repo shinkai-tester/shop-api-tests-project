@@ -12,9 +12,9 @@ public class TestBase {
     ItemDataGenerator data = new ItemDataGenerator();
 
     @Step("Performing item cleanup")
-    public void cleanup(Integer testCaseId) {
+    public void cleanup(Integer itemId) {
         itemApi.deleteItem(SingleItemRequestDto.builder().
-                id(testCaseId)
+                id(itemId)
                 .build());
     }
 
