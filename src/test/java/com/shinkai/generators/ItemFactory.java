@@ -47,6 +47,4 @@ public class ItemFactory {
                 .photo(getBase64FileString(getRandomPhoto()))
                 .build();
     }
-
-    ;
 }

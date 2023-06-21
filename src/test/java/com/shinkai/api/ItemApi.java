@@ -1,14 +1,13 @@
 package com.shinkai.api;
 
 import com.shinkai.api.endpoint.ItemEndPoint;
-import com.shinkai.api.models.*;
+import com.shinkai.api.models.CreateItemRequestDto;
+import com.shinkai.api.models.SingleItemRequestDto;
 import io.qameta.allure.Step;
 import io.restassured.response.ValidatableResponse;
 
 import static com.shinkai.helpers.CustomAllureListener.withCustomTemplates;
 import static io.restassured.RestAssured.with;
-import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
-import static org.hamcrest.Matchers.equalTo;
 
 public class ItemApi extends BaseApi {
 
