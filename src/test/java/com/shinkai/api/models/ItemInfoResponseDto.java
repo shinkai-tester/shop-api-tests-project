@@ -1,4 +1,4 @@
-package com.shinkai.api.item;
+package com.shinkai.api.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,9 +6,10 @@ import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ItemErrorFieldResponseDto {
-    private String method, status, error, message;
+public class ItemInfoResponseDto {
+    private String method,
+            status;
 
-    @JsonProperty("field_error")
-    private String errorField;
+    @JsonProperty("result")
+    private ItemResultDto result;
 }

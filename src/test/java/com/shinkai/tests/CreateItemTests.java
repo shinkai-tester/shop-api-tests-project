@@ -1,8 +1,9 @@
 package com.shinkai.tests;
 
-import com.shinkai.api.item.CreateItemRequestDto;
-import com.shinkai.api.item.ItemErrorFieldResponseDto;
-import com.shinkai.api.item.ItemInfoResponseDto;
+import com.shinkai.api.endpoint.ItemEndPoint;
+import com.shinkai.api.models.CreateItemRequestDto;
+import com.shinkai.api.models.ItemErrorFieldResponseDto;
+import com.shinkai.api.models.ItemInfoResponseDto;
 import io.qameta.allure.Description;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,54 +11,41 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import static com.shinkai.generators.ItemFactory.getBase64FileString;
 import static io.qameta.allure.Allure.step;
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Create item")
 public class CreateItemTests extends TestBase {
+    CreateItemRequestDto newItem = itemFactory.getRandomItem();
 
     @Test
     @DisplayName("Create item in Shop with all fields")
     @Description("Create item in Shop with all possible fields: name, section, description, color, size, price, params, photo")
     public void createItemWithAllFields() {
-        String itemNameReq = data.getItemName();
-        String sectionReq = data.getCategory();
-        String descriptionReq = data.getDescription();
-        String colorReq = data.getColor();
-        String sizeReq = data.getSize();
-        Double priceReq = data.getPrice();
-        String paramsReq = data.getParams();
-        String photoReq = data.getBase64FileString(data.getRandomPhoto());
-
-        CreateItemRequestDto newItem = step("Preparing request with new item data", () ->
-                CreateItemRequestDto.builder()
-                        .name(itemNameReq)
-                        .section(sectionReq)
-                        .description(descriptionReq)
-                        .color(colorReq)
-                        .size(sizeReq)
-                        .price(priceReq)
-                        .params(paramsReq)
-                        .photo(photoReq)
-                        .build());
-
-        ItemInfoResponseDto createItemResponse = itemApi.createItem(newItem);
+        ItemInfoResponseDto createItemResponse = itemApi.createItem(newItem)
+                .body(matchesJsonSchemaInClasspath("schemas/itemInfoSchema.json"))
+                .body("method", equalTo(ItemEndPoint.CREATE))
+                .body("status", equalTo("ok"))
+                .extract().as(ItemInfoResponseDto.class);
 
         step("Checking that created item has id", () ->
                 assertThat(Integer.parseInt(createItemResponse.getResult().getId())).isGreaterThan(0));
 
         step("Verify that the created item contains the fields sent in the request", () ->
                 assertAll(
-                        () -> assertEquals(itemNameReq, createItemResponse.getResult().getName()),
-                        () -> assertEquals(sectionReq, createItemResponse.getResult().getSection()),
-                        () -> assertEquals(descriptionReq, createItemResponse.getResult().getDescription()),
-                        () -> assertEquals(colorReq, createItemResponse.getResult().getColor()),
-                        () -> assertEquals(sizeReq, createItemResponse.getResult().getSize()),
-                        () -> assertEquals(priceReq, createItemResponse.getResult().getPrice()),
-                        () -> assertEquals(paramsReq, createItemResponse.getResult().getParams()),
-                        () -> assertEquals(photoReq, createItemResponse.getResult().getPhoto())
+                        () -> assertEquals(newItem.getName(), createItemResponse.getResult().getName()),
+                        () -> assertEquals(newItem.getSection(), createItemResponse.getResult().getSection()),
+                        () -> assertEquals(newItem.getDescription(), createItemResponse.getResult().getDescription()),
+                        () -> assertEquals(newItem.getColor(), createItemResponse.getResult().getColor()),
+                        () -> assertEquals(newItem.getSize(), createItemResponse.getResult().getSize()),
+                        () -> assertEquals(newItem.getPrice(), createItemResponse.getResult().getPrice()),
+                        () -> assertEquals(newItem.getParams(), createItemResponse.getResult().getParams()),
+                        () -> assertEquals(newItem.getPhoto(), createItemResponse.getResult().getPhoto())
                 ));
 
         cleanup(Integer.parseInt(createItemResponse.getResult().getId()));
@@ -67,26 +55,21 @@ public class CreateItemTests extends TestBase {
     @DisplayName("Create item in Shop with required fields")
     @Description("Create item in Shop with only required fields: name, section and description")
     public void createItemWithRequiredFields() {
-        String itemNameReq = data.getItemName();
-        String sectionReq = data.getCategory();
-        String descriptionReq = data.getDescription();
+        newItem.setPhoto(null);
+        newItem.setParams(null);
+        newItem.setColor(null);
+        newItem.setSize(null);
+        newItem.setPrice(null);
 
-        CreateItemRequestDto newItem = step("Preparing request with new item data", () ->
-                CreateItemRequestDto.builder()
-                        .name(itemNameReq)
-                        .section(sectionReq)
-                        .description(descriptionReq)
-                        .build());
-
-        ItemInfoResponseDto createItemResponse = itemApi.createItem(newItem);
+        ItemInfoResponseDto createItemResponse = itemApi.createItem(newItem).extract().as(ItemInfoResponseDto.class);
 
         step("Checking that created item has id", () ->
                 assertThat(Integer.parseInt(createItemResponse.getResult().getId())).isGreaterThan(0));
         step("Verify that the created item contains the fields sent in the request", () ->
                 assertAll(
-                        () -> assertEquals(itemNameReq, createItemResponse.getResult().getName()),
-                        () -> assertEquals(sectionReq, createItemResponse.getResult().getSection()),
-                        () -> assertEquals(descriptionReq, createItemResponse.getResult().getDescription())
+                        () -> assertEquals(newItem.getName(), createItemResponse.getResult().getName()),
+                        () -> assertEquals(newItem.getSection(), createItemResponse.getResult().getSection()),
+                        () -> assertEquals(newItem.getDescription(), createItemResponse.getResult().getDescription())
                 ));
 
         cleanup(Integer.parseInt(createItemResponse.getResult().getId()));
@@ -99,17 +82,6 @@ public class CreateItemTests extends TestBase {
     }, delimiterString = "|")
     @ParameterizedTest(name = "Unsuccessful item creation: missing required parameter {0}")
     public void createItemWithoutRequiredParam(String parameter, String expectedMessage) {
-        String itemNameReq = data.getItemName();
-        String sectionReq = data.getCategory();
-        String descriptionReq = data.getDescription();
-
-        CreateItemRequestDto newItem = step("Preparing request with new item data", () -> CreateItemRequestDto.builder()
-                .name(itemNameReq)
-                .section(sectionReq)
-                .description(descriptionReq)
-                .build()
-        );
-
         switch (parameter) {
             case "name":
                 newItem.setName("");
@@ -122,7 +94,11 @@ public class CreateItemTests extends TestBase {
                 break;
         }
 
-        ItemErrorFieldResponseDto createItemWithError = itemApi.createItemWithErrorField(newItem);
+        ItemErrorFieldResponseDto createItemWithError = itemApi.createItem(newItem)
+                .body(matchesJsonSchemaInClasspath("schemas/itemErrorSchema.json"))
+                .body("method", equalTo(ItemEndPoint.CREATE + "/"))
+                .body("status", equalTo("error"))
+                .extract().as(ItemErrorFieldResponseDto.class);
 
         step("Verify field_error", () ->
                 assertThat(createItemWithError.getErrorField()).isEqualTo(parameter));
@@ -135,19 +111,9 @@ public class CreateItemTests extends TestBase {
     @ValueSource(strings = {"big_photo.jpg", "photo_501.jpg"})
     @ParameterizedTest(name = "Create item with photo with width more than 500px")
     public void createItemWithTooBigPhoto(String photoName) {
-        String itemNameReq = data.getItemName();
-        String sectionReq = data.getCategory();
-        String descriptionReq = data.getDescription();
-        String photoReq = data.getBase64FileString(photoName);
+        newItem.setPhoto(getBase64FileString(photoName));
 
-        CreateItemRequestDto newItem = step("Preparing request with new item data", () -> CreateItemRequestDto.builder()
-                .name(itemNameReq)
-                .section(sectionReq)
-                .description(descriptionReq)
-                .photo(photoReq)
-                .build());
-
-        ItemErrorFieldResponseDto createItemWithBadPhoto = itemApi.createItemWithErrorField(newItem);
+        ItemErrorFieldResponseDto createItemWithBadPhoto = itemApi.createItem(newItem).extract().as(ItemErrorFieldResponseDto.class);
 
         step("Verify field_error", () ->
                 assertThat(createItemWithBadPhoto.getErrorField()).isEqualTo("photo"));

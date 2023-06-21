@@ -1,6 +1,7 @@
 package com.shinkai.tests;
 
-import com.shinkai.api.item.*;
+import com.shinkai.api.endpoint.ItemEndPoint;
+import com.shinkai.api.models.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,7 +12,9 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static io.qameta.allure.Allure.step;
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 @DisplayName("Delete item")
 public class DeleteItemTests extends TestBase {
@@ -24,12 +27,16 @@ public class DeleteItemTests extends TestBase {
         SingleItemRequestDto requestBody = SingleItemRequestDto.builder()
                 .id(Integer.parseInt(createItemResponse.getResult().getId())).build();
 
-        DeleteItemResponseDto deleteItemResponse = itemApi.deleteItem(requestBody);
+        DeleteItemResponseDto deleteItemResponse = itemApi.deleteItem(requestBody)
+                .body(matchesJsonSchemaInClasspath("schemas/deleteItemSchema.json"))
+                .body("method", equalTo(ItemEndPoint.DELETE))
+                .body("status", equalTo("ok"))
+                .extract().as(DeleteItemResponseDto.class);
 
         step("Verify response contains ID of deleted item", () ->
                 assertThat(deleteItemResponse.getResult()).contains("ID " + createItemResponse.getResult().getId()));
 
-        ItemErrorFieldResponseDto getDeletedItem = itemApi.getUnknownSingleItemInfo(requestBody);
+        ItemErrorFieldResponseDto getDeletedItem = itemApi.getSingleItem(requestBody).extract().as(ItemErrorFieldResponseDto.class);
         step("Verify get item response message that deleted item is not found", () ->
                 assertThat(getDeletedItem.getError()).isEqualTo("item_with_id_not_found"));
     }
@@ -48,7 +55,11 @@ public class DeleteItemTests extends TestBase {
         SingleItemRequestDto requestBody = SingleItemRequestDto.builder()
                 .id(itemId).build();
 
-        ItemErrorFieldResponseDto deleteItemResponse = itemApi.deleteItemWithErrorField(requestBody);
+        ItemErrorFieldResponseDto deleteItemResponse = itemApi.deleteItem(requestBody)
+                .body(matchesJsonSchemaInClasspath("schemas/itemErrorSchema.json"))
+                .body("method", equalTo(ItemEndPoint.DELETE + "/"))
+                .body("status", equalTo("error"))
+                .extract().as(ItemErrorFieldResponseDto.class);
 
         step("Verify field_error=id", () ->
                 assertThat(deleteItemResponse.getErrorField()).isEqualTo("id"));
