@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'io.qameta.allure' version '2.11.2'
-    id "io.freefair.lombok" version "8.0.1"
+    id "io.freefair.lombok" version "8.6"
 }
 
 group = "com.shinkai"
@@ -12,13 +12,13 @@ repositories {
 }
 
 
-def allureVersion = "2.21.0",
-    slf4jVersion = "2.0.7",
-    restAssuredVersion = "5.3.0",
-    junitVersion = "5.9.2",
+def allureVersion = "2.22.0",
+    slf4jVersion = "2.0.13",
+    restAssuredVersion = "5.4.0",
+    junitVersion = "5.10.2",
     javaFakerVersion = "1.0.2",
-    jacksonVersion = "2.15.0",
-    assertJVersion = "3.24.2"
+    jacksonVersion = "2.17.1",
+    assertJVersion = "3.26.0"
 
 allure {
     report {
